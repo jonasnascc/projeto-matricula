@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class Aluno {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String nome;
@@ -44,6 +44,14 @@ public class Aluno {
 
     public void removeDisciplina(Long id){
         disciplinas.removeIf(disc -> disc.getId().equals(id));
+    }
+
+    @PreRemove
+    public void removeFromDisciplinas(){
+        disciplinas.forEach(disciplina -> {
+            disciplina.getAlunos().removeIf(aluno -> aluno.getId().equals(this.id));
+        });
+        disciplinas = null;
     }
 
 
